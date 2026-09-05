@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Importer des employés — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/employes}">Employés</a></li>
+                <li class="breadcrumb-item active">Import Excel</li>
+            </ol>
+        </nav>
+
+        <div class="sb-page-title">
+            <h1><i class="bi bi-file-earmark-arrow-up me-2"></i>Importer des employés</h1>
+            <p class="text-muted">Fichier .xlsx avec les colonnes, dans l'ordre : Matricule, Nom, Prénom, Email, Téléphone, Poste (première ligne = en-têtes).</p>
+        </div>
+
+        <div class="alert alert-danger" th:if="${erreur}" th:text="${erreur}">Erreur</div>
+
+        <div class="sb-panel" th:if="${resultat}">
+            <h5>Résultat de l'import</h5>
+            <p>
+                <span class="badge sb-statut-ACTIF me-2" th:text="${resultat.nombreImportes} + ' importé(s)'">0 importé(s)</span>
+                <span class="badge sb-statut-SUSPENDU" th:text="${resultat.nombreIgnores} + ' ignoré(s)'">0 ignoré(s)</span>
+            </p>
+            <ul class="text-danger small" th:if="${not #lists.isEmpty(resultat.erreurs)}">
+                <li th:each="e : ${resultat.erreurs}" th:text="${e}">Erreur</li>
+            </ul>
+            <a th:href="@{/employes}" class="btn btn-outline-primary btn-sm mt-2">Voir la liste des employés</a>
+        </div>
+
+        <form class="sb-panel" method="post" th:action="@{/employes/import}" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label">Fichier Excel (.xlsx)</label>
+                <input type="file" name="fichier" class="form-control" accept=".xlsx" required>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-upload me-1"></i>Importer</button>
+        </form>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Departements — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <div class="sb-page-title d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h1><i class="bi bi-diagram-2 me-2"></i>Departements</h1>
+            </div>
+            <a th:href="@{/departements/nouveau}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nouveau departement</a>
+        </div>
+
+        <div class="sb-panel p-0">
+            <div class="table-responsive">
+                <table class="table sb-table align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Description</th>
+                        <th>Employes</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${departements.empty}">
+                        <td colspan="4" class="text-center text-muted py-4">
+                            <i class="bi bi-inbox fs-3 d-block mb-2"></i>Aucun departement.
+                        </td>
+                    </tr>
+                    <tr th:each="d : ${departements}">
+                        <td th:text="${d.nom}">Nom</td>
+                        <td th:text="${d.description ?: '—'}">Description</td>
+                        <td th:text="${#lists.size(d.employes)}">0</td>
+                        <td class="text-end">
+                            <a th:href="@{/departements/{id}/modifier(id=${d.id})}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" th:data-bs-target="'#suppr' + ${d.id}"><i class="bi bi-trash"></i></button>
+                            <div th:replace="~{fragments/confirmation-suppression :: modal('suppr' + ${d.id}, @{/departements/{id}/supprimer(id=${d.id})}, 'Supprimer le departement ' + ${d.nom} + ' ?')}"></div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

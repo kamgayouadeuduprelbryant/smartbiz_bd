@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail employe — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/employes}">Employes</a></li>
+                <li class="breadcrumb-item active" th:text="${employe.prenom + ' ' + employe.nom}">Detail</li>
+            </ol>
+        </nav>
+
+        <div class="sb-panel">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                    <h1 class="h3 mb-1" th:text="${employe.prenom + ' ' + employe.nom}">Nom Prenom</h1>
+                    <p class="text-muted mb-0" th:text="${employe.poste}">Poste</p>
+                </div>
+                <span class="badge sb-badge-statut" th:classappend="'sb-statut-' + ${employe.statut}" th:text="${employe.statut}">ACTIF</span>
+            </div>
+
+            <hr>
+
+            <div class="row g-3">
+                <div class="col-md-4"><strong>Matricule</strong><div th:text="${employe.matricule}">—</div></div>
+                <div class="col-md-4"><strong>Email</strong><div th:text="${employe.email ?: '—'}">—</div></div>
+                <div class="col-md-4"><strong>Telephone</strong><div th:text="${employe.telephone ?: '—'}">—</div></div>
+                <div class="col-md-4"><strong>Departement</strong><div th:text="${employe.departement != null ? employe.departement.nom : '—'}">—</div></div>
+                <div class="col-md-4"><strong>Salaire</strong><div th:text="${employe.salaire != null ? employe.salaire : '—'}">—</div></div>
+                <div class="col-md-4"><strong>Date d'embauche</strong><div th:text="${employe.dateEmbauche ?: '—'}">—</div></div>
+            </div>
+
+            <div class="mt-4">
+                <a th:href="@{/employes/{id}/modifier(id=${employe.id})}" class="btn btn-outline-secondary"><i class="bi bi-pencil me-1"></i>Modifier</a>
+                <a th:href="@{/employes}" class="btn btn-link">Retour a la liste</a>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

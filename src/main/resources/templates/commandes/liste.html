@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Commandes — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <div class="sb-page-title d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h1><i class="bi bi-cart3 me-2"></i>Commandes</h1>
+            </div>
+            <a th:href="@{/commandes/nouveau}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nouvelle commande</a>
+        </div>
+
+        <form method="get" th:action="@{/commandes}" class="sb-panel sb-filters mb-3">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label small">Statut</label>
+                    <select name="statut" class="form-select">
+                        <option value="">Tous</option>
+                        <option th:each="s : ${statuts}" th:value="${s}" th:text="${s}" th:selected="${s == statut}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-outline-primary w-100"><i class="bi bi-funnel me-1"></i>Filtrer</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="sb-panel p-0">
+            <div class="table-responsive">
+                <table class="table sb-table align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th>Numero</th>
+                        <th>Client</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Statut</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${commandesPage.empty}">
+                        <td colspan="5" class="text-center text-muted py-4">
+                            <i class="bi bi-inbox fs-3 d-block mb-2"></i>Aucune commande trouvee.
+                        </td>
+                    </tr>
+                    <tr th:each="c : ${commandesPage.content}">
+                        <td><a th:href="@{/commandes/{id}(id=${c.id})}" th:text="${c.numero}">CMD-000001</a></td>
+                        <td th:text="${c.client.nom}">Client</td>
+                        <td th:text="${c.dateCommande}">2026-01-01</td>
+                        <td th:text="${c.total}">0.00</td>
+                        <td><span class="badge sb-badge-statut" th:text="${c.statut}">EN_ATTENTE</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-3" th:replace="~{fragments/pagination :: pagination(${commandesPage}, '/commandes')}"></div>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

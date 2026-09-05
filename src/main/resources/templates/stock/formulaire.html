@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouveau mouvement — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <div class="sb-page-title">
+            <h1>Nouveau mouvement de stock</h1>
+        </div>
+
+        <div class="alert alert-danger" th:if="${erreur}" th:text="${erreur}">Erreur</div>
+
+        <form class="sb-panel" method="post" th:action="@{/stock}" th:object="${mouvementDto}">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Produit</label>
+                    <select th:field="*{produitId}" class="form-select" required>
+                        <option value="">Choisir un produit</option>
+                        <option th:each="p : ${produits}" th:value="${p.id}"
+                                th:text="${p.nom + ' (' + p.reference + ') — stock actuel : ' + p.quantiteStock}"></option>
+                    </select>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('produitId')}" th:errors="*{produitId}"></div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Type</label>
+                    <select th:field="*{type}" class="form-select" required>
+                        <option value="ENTREE">Entree</option>
+                        <option value="SORTIE">Sortie</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Quantite</label>
+                    <input type="number" min="1" th:field="*{quantite}" class="form-control" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('quantite')}" th:errors="*{quantite}"></div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Motif</label>
+                    <input type="text" th:field="*{motif}" class="form-control" placeholder="Reception fournisseur, vente, inventaire, casse...">
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Enregistrer</button>
+                <a th:href="@{/stock}" class="btn btn-outline-secondary">Annuler</a>
+            </div>
+        </form>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

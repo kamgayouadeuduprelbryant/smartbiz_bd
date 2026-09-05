@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<nav th:fragment="sidebar" id="sbSidebar" class="sb-sidebar offcanvas-lg offcanvas-start" tabindex="-1">
+    <div class="sb-sidebar-brand">
+        <i class="bi bi-diagram-3-fill"></i>
+        <span>SmartBiz</span>
+        <button type="button" class="btn-close btn-close-white d-lg-none" data-bs-dismiss="offcanvas" data-bs-target="#sbSidebar"></button>
+    </div>
+
+    <ul class="sb-nav">
+        <li><a href="/dashboard"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a></li>
+
+        <li class="sb-nav-section" sec:authorize="hasAnyRole('ADMIN','RH','MANAGER')">Ressources humaines</li>
+        <li sec:authorize="hasAnyRole('ADMIN','RH','MANAGER')"><a href="/employes"><i class="bi bi-people"></i><span>Employes</span></a></li>
+        <li sec:authorize="hasAnyRole('ADMIN','RH','MANAGER')"><a href="/departements"><i class="bi bi-diagram-2"></i><span>Departements</span></a></li>
+        <li sec:authorize="hasAnyRole('ADMIN','RH','MANAGER')"><a href="/conges"><i class="bi bi-calendar-check"></i><span>Conges</span></a></li>
+        <li sec:authorize="hasAnyRole('ADMIN','RH','MANAGER')"><a href="/presences"><i class="bi bi-clock-history"></i><span>Presences</span></a></li>
+
+        <li class="sb-nav-section">Commercial</li>
+        <li><a href="/clients"><i class="bi bi-person-vcard"></i><span>Clients</span></a></li>
+        <li><a href="/fournisseurs"><i class="bi bi-truck"></i><span>Fournisseurs</span></a></li>
+        <li><a href="/produits"><i class="bi bi-box-seam"></i><span>Produits</span></a></li>
+        <li><a href="/stock"><i class="bi bi-boxes"></i><span>Stock</span></a></li>
+        <li><a href="/commandes"><i class="bi bi-cart3"></i><span>Commandes</span></a></li>
+        <li><a href="/factures"><i class="bi bi-receipt"></i><span>Factures</span></a></li>
+
+        <li class="sb-nav-section" sec:authorize="hasAnyRole('ADMIN','COMPTABLE','MANAGER')">Finance</li>
+        <li sec:authorize="hasAnyRole('ADMIN','COMPTABLE','MANAGER')"><a href="/finances"><i class="bi bi-cash-stack"></i><span>Finances</span></a></li>
+
+        <li class="sb-nav-section">Organisation</li>
+        <li><a href="/projets"><i class="bi bi-kanban"></i><span>Projets</span></a></li>
+        <li><a href="/taches"><i class="bi bi-list-task"></i><span>Taches</span></a></li>
+        <li><a href="/notifications"><i class="bi bi-bell"></i><span>Notifications</span></a></li>
+        <li><a href="/assistant"><i class="bi bi-stars"></i><span>Assistant</span></a></li>
+        <li sec:authorize="hasAnyRole('ADMIN','MANAGER','COMPTABLE')"><a href="/rapports"><i class="bi bi-bar-chart"></i><span>Rapports</span></a></li>
+
+        <li class="sb-nav-section" sec:authorize="hasRole('ADMIN')">Administration</li>
+        <li sec:authorize="hasRole('ADMIN')"><a href="/utilisateurs"><i class="bi bi-person-gear"></i><span>Utilisateurs</span></a></li>
+        <li sec:authorize="hasRole('ADMIN')"><a href="/parametres"><i class="bi bi-gear"></i><span>Parametres</span></a></li>
+    </ul>
+</nav>
+
+</body>
+</html>

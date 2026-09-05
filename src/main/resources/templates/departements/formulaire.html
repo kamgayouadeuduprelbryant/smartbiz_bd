@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Departement — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <div class="sb-page-title">
+            <h1 th:text="${departement.id != null} ? 'Modifier le departement' : 'Nouveau departement'">Nouveau departement</h1>
+        </div>
+
+        <form class="sb-panel" method="post" th:object="${departement}"
+              th:action="${departement.id != null} ? @{/departements/{id}(id=${departement.id})} : @{/departements}">
+
+            <input type="hidden" th:field="*{id}">
+
+            <div class="mb-3">
+                <label class="form-label">Nom</label>
+                <input type="text" th:field="*{nom}" class="form-control" required>
+                <div class="text-danger small" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea th:field="*{description}" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mt-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Enregistrer</button>
+                <a th:href="@{/departements}" class="btn btn-outline-secondary">Annuler</a>
+            </div>
+        </form>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

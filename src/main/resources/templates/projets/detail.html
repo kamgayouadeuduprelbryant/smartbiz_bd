@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Projet — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet" th:href="@{/css/kanban.css}">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/projets}">Projets</a></li>
+                <li class="breadcrumb-item active" th:text="${projet.nom}">Projet</li>
+            </ol>
+        </nav>
+
+        <div class="sb-page-title d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div>
+                <h1 th:text="${projet.nom}">Projet</h1>
+                <p class="text-muted mb-0" th:text="${projet.description}">Description</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nouvelleTache">
+                    <i class="bi bi-plus-lg me-1"></i>Nouvelle tache
+                </button>
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#supprProjet">
+                    <i class="bi bi-trash me-1"></i>Supprimer
+                </button>
+            </div>
+        </div>
+
+        <div class="kanban-board">
+            <div class="kanban-column" th:each="statut : ${statutsTache}" th:data-statut="${statut}">
+                <div class="kanban-column-header">
+                    <span th:text="${statut}">A_FAIRE</span>
+                    <span class="badge bg-secondary" th:text="${#lists.size(colonnes.get(statut))}">0</span>
+                </div>
+                <div class="kanban-column-body" th:id="'col-' + ${statut}">
+                    <div class="kanban-card" th:each="t : ${colonnes.get(statut)}" th:data-tache-id="${t.id}" draggable="true">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <strong th:text="${t.titre}">Titre</strong>
+                            <form method="post" th:action="@{/taches/{id}/supprimer(id=${t.id})}" class="ms-2">
+                                <button type="submit" class="btn btn-sm btn-link text-danger p-0"><i class="bi bi-x-lg"></i></button>
+                            </form>
+                        </div>
+                        <p class="small text-muted mb-1" th:if="${t.description}" th:text="${t.description}">Description</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge sb-badge-statut" th:text="${t.priorite}">NORMALE</span>
+                            <span class="small text-muted" th:if="${t.dateLimite}" th:text="${t.dateLimite}">2026-01-01</span>
+                        </div>
+                        <div class="small text-muted mt-1" th:if="${t.responsable}" th:text="${t.responsable.prenom + ' ' + t.responsable.nom}">Responsable</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modale nouvelle tache -->
+<div class="modal fade" id="nouvelleTache" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" th:action="@{/projets/{id}/taches(id=${projet.id})}" th:object="${tacheDto}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nouvelle tache</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <label class="form-label">Titre</label>
+                        <input type="text" th:field="*{titre}" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Description</label>
+                        <textarea th:field="*{description}" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Responsable</label>
+                        <select th:field="*{responsableId}" class="form-select">
+                            <option value="">Non assigne</option>
+                            <option th:each="e : ${employes}" th:value="${e.id}" th:text="${e.prenom + ' ' + e.nom}"></option>
+                        </select>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <label class="form-label">Priorite</label>
+                            <select th:field="*{priorite}" class="form-select">
+                                <option th:each="p : ${T(com.smartbiz.model.PrioriteTache).values()}" th:value="${p}" th:text="${p}"></option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Date limite</label>
+                            <input type="date" th:field="*{dateLimite}" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Creer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/confirmation-suppression :: modal('supprProjet', @{/projets/{id}/supprimer(id=${projet.id})}, 'Supprimer le projet ' + ${projet.nom} + ' et toutes ses taches ?')}"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/kanban.js}"></script>
+</body>
+</html>

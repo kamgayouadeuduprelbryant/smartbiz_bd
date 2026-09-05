@@ -1,0 +1,18 @@
+# Copiez ce fichier en "application-local.properties" (ignore par git)
+# puis lancez l'appli avec : mvn spring-boot:run -Dspring-boot.run.profiles=local
+
+DATABASE_URL=jdbc:postgresql://localhost:5432/smartbiz
+DATABASE_USERNAME=smartbiz_user
+DATABASE_PASSWORD=changeme
+
+GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+
+JPA_DDL_AUTO=update
+THYMELEAF_CACHE=false
+SERVER_PORT=8080

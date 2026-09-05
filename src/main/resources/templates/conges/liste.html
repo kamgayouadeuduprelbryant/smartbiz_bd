@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Congés — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <div class="sb-page-title d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h1><i class="bi bi-calendar-check me-2"></i>Congés</h1>
+            </div>
+            <a th:href="@{/conges/nouveau}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nouvelle demande</a>
+        </div>
+
+        <form method="get" th:action="@{/conges}" class="sb-panel sb-filters mb-3">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label small">Statut</label>
+                    <select name="statut" class="form-select">
+                        <option value="">Tous</option>
+                        <option th:each="s : ${statuts}" th:value="${s}" th:text="${s}" th:selected="${s == statut}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-outline-primary w-100"><i class="bi bi-funnel me-1"></i>Filtrer</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="sb-panel p-0">
+            <div class="table-responsive">
+                <table class="table sb-table align-middle mb-0">
+                    <thead>
+                    <tr><th>Employe</th><th>Type</th><th>Periode</th><th>Jours</th><th>Statut</th><th class="text-end">Actions</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${congesPage.empty}">
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i class="bi bi-inbox fs-3 d-block mb-2"></i>Aucune demande trouvee.
+                        </td>
+                    </tr>
+                    <tr th:each="c : ${congesPage.content}">
+                        <td th:text="${c.employe.prenom + ' ' + c.employe.nom}">Employe</td>
+                        <td th:text="${c.type}">CONGE_PAYE</td>
+                        <td th:text="${c.dateDebut} + ' au ' + ${c.dateFin}">Periode</td>
+                        <td th:text="${c.nombreJours}">0</td>
+                        <td><span class="badge sb-badge-statut" th:text="${c.statut}">EN_ATTENTE</span></td>
+                        <td class="text-end" th:if="${c.statut.name() == 'EN_ATTENTE'}">
+                            <form method="post" th:action="@{/conges/{id}/approuver(id=${c.id})}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-check-lg"></i></button>
+                            </form>
+                            <form method="post" th:action="@{/conges/{id}/refuser(id=${c.id})}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-x-lg"></i></button>
+                            </form>
+                        </td>
+                        <td class="text-end" th:unless="${c.statut.name() == 'EN_ATTENTE'}">—</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-3" th:replace="~{fragments/pagination :: pagination(${congesPage}, '/conges')}"></div>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

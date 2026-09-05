@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouvelle présence — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <div class="sb-page-title"><h1>Enregistrer une présence</h1></div>
+
+        <div class="alert alert-danger" th:if="${erreur}" th:text="${erreur}">Erreur</div>
+
+        <form class="sb-panel" method="post" th:action="@{/presences}" th:object="${presenceDto}">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Employe</label>
+                    <select th:field="*{employeId}" class="form-select" required>
+                        <option value="">Choisir un employe</option>
+                        <option th:each="e : ${employes}" th:value="${e.id}" th:text="${e.prenom + ' ' + e.nom}"></option>
+                    </select>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('employeId')}" th:errors="*{employeId}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Date</label>
+                    <input type="date" th:field="*{date}" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Statut</label>
+                    <select th:field="*{statut}" class="form-select">
+                        <option th:each="s : ${statuts}" th:value="${s}" th:text="${s}"></option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Heure d'arrivee</label>
+                    <input type="time" th:field="*{heureArrivee}" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Heure de depart</label>
+                    <input type="time" th:field="*{heureDepart}" class="form-control">
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Notes</label>
+                    <textarea th:field="*{notes}" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Enregistrer</button>
+                <a th:href="@{/presences}" class="btn btn-outline-secondary">Annuler</a>
+            </div>
+        </form>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

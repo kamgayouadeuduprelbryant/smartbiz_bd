@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Finances — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <div class="sb-page-title d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h1><i class="bi bi-cash-stack me-2"></i>Finances</h1>
+                <p class="text-muted">Vue d'ensemble de l'annee en cours</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a th:href="@{/finances/revenus}" class="btn btn-outline-success">Revenus</a>
+                <a th:href="@{/finances/depenses}" class="btn btn-outline-danger">Depenses</a>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="sb-stat-card">
+                    <div class="sb-stat-icon bg-success-subtle text-success"><i class="bi bi-cash-stack"></i></div>
+                    <div>
+                        <div class="sb-stat-value" th:text="${stats.chiffreAffaires}">0</div>
+                        <div class="sb-stat-label">Chiffre d'affaires</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="sb-stat-card">
+                    <div class="sb-stat-icon bg-danger-subtle text-danger"><i class="bi bi-graph-down"></i></div>
+                    <div>
+                        <div class="sb-stat-value" th:text="${stats.totalDepenses}">0</div>
+                        <div class="sb-stat-label">Depenses</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="sb-stat-card">
+                    <div class="sb-stat-icon bg-primary-subtle text-primary"><i class="bi bi-graph-up-arrow"></i></div>
+                    <div>
+                        <div class="sb-stat-value" th:text="${stats.benefice}">0</div>
+                        <div class="sb-stat-label">Benefice</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sb-panel mt-3">
+            <h5>Revenus vs Depenses (6 derniers mois)</h5>
+            <canvas id="chartFinance" height="100"></canvas>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+<script th:inline="javascript">
+    const revenus = /*[[${stats.revenusMensuels}]]*/ [];
+    const depenses = /*[[${stats.depensesMensuelles}]]*/ [];
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('chartFinance');
+        if (!ctx || !window.Chart) return;
+
+        const labels = revenus.length ? revenus.map(r => r.mois) : depenses.map(d => d.mois);
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Revenus', data: revenus.map(r => r.montant), backgroundColor: '#16a34a' },
+                    { label: 'Depenses', data: depenses.map(d => d.montant), backgroundColor: '#dc2626' }
+                ]
+            },
+            options: { scales: { y: { beginAtZero: true } } }
+        });
+    });
+</script>
+</body>
+</html>

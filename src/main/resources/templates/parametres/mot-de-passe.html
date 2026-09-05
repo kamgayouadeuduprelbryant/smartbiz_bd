@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Changer le mot de passe — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <div class="sb-page-title">
+            <h1><i class="bi bi-key me-2"></i>Changer le mot de passe</h1>
+        </div>
+
+        <div class="alert alert-success" th:if="${param.succes}">Mot de passe modifié avec succès.</div>
+        <div class="alert alert-danger" th:if="${erreur}" th:text="${erreur}">Erreur</div>
+
+        <form class="sb-panel" method="post" th:action="@{/parametres/mot-de-passe}" th:object="${changerMotDePasseDto}">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label">Mot de passe actuel</label>
+                    <input type="password" th:field="*{motDePasseActuel}" class="form-control" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('motDePasseActuel')}" th:errors="*{motDePasseActuel}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Nouveau mot de passe</label>
+                    <input type="password" th:field="*{nouveauMotDePasse}" class="form-control" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('nouveauMotDePasse')}" th:errors="*{nouveauMotDePasse}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Confirmation</label>
+                    <input type="password" th:field="*{confirmation}" class="form-control" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('confirmation')}" th:errors="*{confirmation}"></div>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Changer le mot de passe</button>
+                <a th:href="@{/parametres/profil}" class="btn btn-outline-secondary">Annuler</a>
+            </div>
+        </form>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

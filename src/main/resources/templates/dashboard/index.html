@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <div class="sb-page-title">
+            <h1>Dashboard</h1>
+            <p class="text-muted">Vue d'ensemble de votre entreprise</p>
+        </div>
+
+        <div class="row g-3" id="dashboardCards">
+            <div class="col-6 col-lg-3">
+                <div class="sb-stat-card">
+                    <div class="sb-stat-icon bg-primary-subtle text-primary"><i class="bi bi-people"></i></div>
+                    <div>
+                        <div class="sb-stat-value" id="statEmployes" th:text="${stats.nombreEmployesActifs}">0</div>
+                        <div class="sb-stat-label">Employes actifs</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="sb-stat-card">
+                    <div class="sb-stat-icon bg-info-subtle text-info"><i class="bi bi-diagram-2"></i></div>
+                    <div>
+                        <div class="sb-stat-value" id="statDepartements" th:text="${stats.nombreDepartements}">0</div>
+                        <div class="sb-stat-label">Departements</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="sb-stat-card">
+                    <div class="sb-stat-icon bg-success-subtle text-success"><i class="bi bi-person-vcard"></i></div>
+                    <div>
+                        <div class="sb-stat-value" id="statClients" th:text="${stats.nombreClients}">0</div>
+                        <div class="sb-stat-label">Clients actifs</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="sb-stat-card">
+                    <div class="sb-stat-icon bg-warning-subtle text-warning"><i class="bi bi-box-seam"></i></div>
+                    <div>
+                        <div class="sb-stat-value" id="statProduits" th:text="${stats.nombreProduits}">0</div>
+                        <div class="sb-stat-label">Produits references</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mt-1">
+            <div class="col-6 col-lg-3">
+                <div class="sb-stat-card">
+                    <div class="sb-stat-icon bg-success-subtle text-success"><i class="bi bi-cash-stack"></i></div>
+                    <div>
+                        <div class="sb-stat-value" id="statCA" th:text="${stats.chiffreAffaires}">0</div>
+                        <div class="sb-stat-label">Chiffre d'affaires (annee)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="sb-stat-card">
+                    <div class="sb-stat-icon bg-danger-subtle text-danger"><i class="bi bi-graph-down"></i></div>
+                    <div>
+                        <div class="sb-stat-value" id="statDepenses" th:text="${stats.totalDepenses}">0</div>
+                        <div class="sb-stat-label">Depenses (annee)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="sb-stat-card">
+                    <div class="sb-stat-icon bg-primary-subtle text-primary"><i class="bi bi-graph-up"></i></div>
+                    <div>
+                        <div class="sb-stat-value" id="statBenefice" th:text="${stats.benefice}">0</div>
+                        <div class="sb-stat-label">Benefice (annee)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="sb-stat-card">
+                    <div class="sb-stat-icon bg-warning-subtle text-warning"><i class="bi bi-receipt"></i></div>
+                    <div>
+                        <div class="sb-stat-value" id="statFacturesImpayees" th:text="${stats.nombreFacturesImpayees}">0</div>
+                        <div class="sb-stat-label">Factures impayees</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mt-1" th:if="${stats.nombreProduitsStockFaible > 0 or stats.nombreProduitsRupture > 0}">
+            <div class="col-12">
+                <div class="alert alert-warning d-flex align-items-center gap-2 mb-0" th:if="${stats.nombreProduitsStockFaible > 0}">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span th:text="${stats.nombreProduitsStockFaible} + ' produit(s) en stock faible.'">Stock faible</span>
+                    <a th:href="@{/stock/alertes}" class="ms-auto btn btn-sm btn-outline-warning">Voir</a>
+                </div>
+                <div class="alert alert-danger d-flex align-items-center gap-2 mt-2 mb-0" th:if="${stats.nombreProduitsRupture > 0}">
+                    <i class="bi bi-x-octagon"></i>
+                    <span th:text="${stats.nombreProduitsRupture} + ' produit(s) en rupture de stock.'">Rupture</span>
+                    <a th:href="@{/stock/alertes}" class="ms-auto btn btn-sm btn-outline-danger">Voir</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mt-1">
+            <div class="col-lg-8">
+                <div class="sb-panel">
+                    <h5>Evolution du chiffre d'affaires</h5>
+                    <p class="text-muted small">Revenus des 6 derniers mois (donnees reelles du module Finance).</p>
+                    <canvas id="chartRevenus" height="110"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="sb-panel">
+                    <h5>Repartition des employes</h5>
+                    <canvas id="chartEmployes" height="180"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+<script th:src="@{/js/recherche.js}"></script>
+<script th:inline="javascript">
+    window.SB_STATS_URL = /*[[@{/dashboard/stats}]]*/ '/dashboard/stats';
+    window.SB_REVENUS_MENSUELS = /*[[${financeStats.revenusMensuels}]]*/ [];
+    window.SB_EMPLOYES_ACTIFS = /*[[${stats.nombreEmployesActifs}]]*/ 0;
+</script>
+</body>
+</html>

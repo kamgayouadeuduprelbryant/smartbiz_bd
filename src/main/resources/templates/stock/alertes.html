@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Alertes stock — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <div class="sb-page-title">
+            <h1><i class="bi bi-exclamation-triangle me-2"></i>Alertes stock</h1>
+            <p class="text-muted">Produits en stock faible ou en rupture</p>
+        </div>
+
+        <div class="sb-panel">
+            <h5 class="text-danger"><i class="bi bi-x-octagon me-2"></i>En rupture de stock</h5>
+            <div class="table-responsive">
+                <table class="table sb-table align-middle mb-0">
+                    <thead><tr><th>Reference</th><th>Nom</th><th>Stock</th><th class="text-end">Action</th></tr></thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(enRupture)}">
+                        <td colspan="4" class="text-center text-muted py-3">Aucun produit en rupture.</td>
+                    </tr>
+                    <tr th:each="p : ${enRupture}">
+                        <td th:text="${p.reference}">REF</td>
+                        <td th:text="${p.nom}">Nom</td>
+                        <td th:text="${p.quantiteStock}">0</td>
+                        <td class="text-end"><a th:href="@{/stock/nouveau}" class="btn btn-sm btn-primary">Reapprovisionner</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="sb-panel">
+            <h5 class="text-warning"><i class="bi bi-exclamation-triangle me-2"></i>Stock faible</h5>
+            <div class="table-responsive">
+                <table class="table sb-table align-middle mb-0">
+                    <thead><tr><th>Reference</th><th>Nom</th><th>Stock</th><th>Seuil</th><th class="text-end">Action</th></tr></thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(stockFaible)}">
+                        <td colspan="5" class="text-center text-muted py-3">Aucun produit en stock faible.</td>
+                    </tr>
+                    <tr th:each="p : ${stockFaible}">
+                        <td th:text="${p.reference}">REF</td>
+                        <td th:text="${p.nom}">Nom</td>
+                        <td th:text="${p.quantiteStock}">0</td>
+                        <td th:text="${p.seuilMinimum}">0</td>
+                        <td class="text-end"><a th:href="@{/stock/nouveau}" class="btn btn-sm btn-outline-primary">Reapprovisionner</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

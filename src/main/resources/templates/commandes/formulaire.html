@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouvelle commande — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <div class="sb-page-title">
+            <h1>Nouvelle commande</h1>
+            <p class="text-muted">Les produits pourront etre ajoutes a l'etape suivante.</p>
+        </div>
+
+        <form class="sb-panel" method="post" th:action="@{/commandes}" th:object="${commandeDto}">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Client</label>
+                    <select th:field="*{clientId}" class="form-select" required>
+                        <option value="">Choisir un client</option>
+                        <option th:each="c : ${clients}" th:value="${c.id}" th:text="${c.nom}"></option>
+                    </select>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('clientId')}" th:errors="*{clientId}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Date de commande</label>
+                    <input type="date" th:field="*{dateCommande}" class="form-control">
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Notes</label>
+                    <textarea th:field="*{notes}" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-arrow-right-circle me-1"></i>Creer et ajouter des produits</button>
+                <a th:href="@{/commandes}" class="btn btn-outline-secondary">Annuler</a>
+            </div>
+        </form>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

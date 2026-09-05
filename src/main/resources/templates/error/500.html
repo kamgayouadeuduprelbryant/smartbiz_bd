@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>500 - SmartBiz</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" th:href="@{/css/app.css}"></head>
+<body class="sb-error-body">
+<div class="sb-error-card">
+<i class="bi bi-bug text-danger"></i>
+<h1>500</h1>
+<p>Une erreur interne est survenue.</p>
+<p class="text-muted" th:text="${message}"></p>
+<a href="/dashboard" class="btn btn-primary">Retour au dashboard</a>
+</div>
+</body>
+</html>

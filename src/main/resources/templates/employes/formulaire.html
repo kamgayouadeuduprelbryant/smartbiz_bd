@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Employe — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <div class="sb-page-title">
+            <h1 th:text="${employeDto.id != null} ? 'Modifier l\'employe' : 'Nouvel employe'">Nouvel employe</h1>
+        </div>
+
+        <form class="sb-panel" method="post" th:object="${employeDto}"
+              th:action="${employeDto.id != null} ? @{/employes/{id}(id=${employeDto.id})} : @{/employes}">
+
+            <input type="hidden" th:field="*{id}">
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Matricule</label>
+                    <input type="text" th:field="*{matricule}" class="form-control" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('matricule')}" th:errors="*{matricule}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Nom</label>
+                    <input type="text" th:field="*{nom}" class="form-control" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Prenom</label>
+                    <input type="text" th:field="*{prenom}" class="form-control" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('prenom')}" th:errors="*{prenom}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Email</label>
+                    <input type="email" th:field="*{email}" class="form-control">
+                    <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Telephone</label>
+                    <input type="text" th:field="*{telephone}" class="form-control">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Poste</label>
+                    <input type="text" th:field="*{poste}" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Departement</label>
+                    <select th:field="*{departementId}" class="form-select">
+                        <option value="">Aucun</option>
+                        <option th:each="d : ${departements}" th:value="${d.id}" th:text="${d.nom}"></option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Salaire</label>
+                    <input type="number" step="0.01" th:field="*{salaire}" class="form-control">
+                    <div class="text-danger small" th:if="${#fields.hasErrors('salaire')}" th:errors="*{salaire}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Date d'embauche</label>
+                    <input type="date" th:field="*{dateEmbauche}" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Statut</label>
+                    <select th:field="*{statut}" class="form-select">
+                        <option th:each="s : ${T(com.smartbiz.model.StatutEmploye).values()}" th:value="${s}" th:text="${s}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Enregistrer</button>
+                <a th:href="@{/employes}" class="btn btn-outline-secondary">Annuler</a>
+            </div>
+        </form>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Produits — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <div class="sb-page-title d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h1><i class="bi bi-box-seam me-2"></i>Produits</h1>
+                <p class="text-muted">Catalogue produits et suivi du stock</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#nouvelleCategorie">
+                    <i class="bi bi-tags me-1"></i>Categorie
+                </button>
+                <a th:href="@{/produits/import}" class="btn btn-outline-secondary"><i class="bi bi-file-earmark-arrow-up me-1"></i>Importer Excel</a>
+                <a th:href="@{/produits/nouveau}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nouveau produit</a>
+            </div>
+        </div>
+
+        <form method="get" th:action="@{/produits}" class="sb-panel sb-filters mb-3">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label small">Recherche</label>
+                    <input type="text" name="recherche" th:value="${recherche}" class="form-control" placeholder="Nom, reference...">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small">Categorie</label>
+                    <select name="categorieId" class="form-select">
+                        <option value="">Toutes</option>
+                        <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.nom}" th:selected="${cat.id == categorieId}"></option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small">Fournisseur</label>
+                    <select name="fournisseurId" class="form-select">
+                        <option value="">Tous</option>
+                        <option th:each="f : ${fournisseurs}" th:value="${f.id}" th:text="${f.nom}" th:selected="${f.id == fournisseurId}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-outline-primary w-100"><i class="bi bi-funnel me-1"></i>Filtrer</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="sb-panel p-0">
+            <div class="table-responsive">
+                <table class="table sb-table align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Nom</th>
+                        <th>Categorie</th>
+                        <th>Prix vente</th>
+                        <th>Stock</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${produitsPage.empty}">
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i class="bi bi-inbox fs-3 d-block mb-2"></i>Aucun produit trouve.
+                        </td>
+                    </tr>
+                    <tr th:each="p : ${produitsPage.content}">
+                        <td th:text="${p.reference}">REF-0001</td>
+                        <td th:text="${p.nom}">Nom</td>
+                        <td th:text="${p.categorie != null ? p.categorie.nom : '—'}">Categorie</td>
+                        <td th:text="${p.prixVente}">0.00</td>
+                        <td>
+                            <span th:text="${p.quantiteStock}">0</span>
+                            <span class="badge sb-statut-SUSPENDU ms-1" th:if="${p.rupture}">Rupture</span>
+                            <span class="badge sb-statut-EN_CONGE ms-1" th:if="${p.stockFaible}">Stock faible</span>
+                        </td>
+                        <td class="text-end">
+                            <a th:href="@{/produits/{id}/modifier(id=${p.id})}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" th:data-bs-target="'#suppr' + ${p.id}"><i class="bi bi-trash"></i></button>
+                            <div th:replace="~{fragments/confirmation-suppression :: modal('suppr' + ${p.id}, @{/produits/{id}/supprimer(id=${p.id})}, 'Supprimer le produit ' + ${p.nom} + ' ?')}"></div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-3" th:replace="~{fragments/pagination :: pagination(${produitsPage}, '/produits')}"></div>
+    </main>
+</div>
+
+<!-- Modale creation rapide de categorie -->
+<div class="modal fade" id="nouvelleCategorie" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" th:action="@{/produits/categories}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nouvelle categorie</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label">Nom</label>
+                    <input type="text" name="nom" class="form-control" required>
+                    <label class="form-label mt-2">Description</label>
+                    <textarea name="description" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Creer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/produits.js}"></script>
+<script th:src="@{/js/recherche.js}"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon profil — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <div class="sb-page-title">
+            <h1><i class="bi bi-person me-2"></i>Mon profil</h1>
+        </div>
+
+        <div class="alert alert-success" th:if="${param.succes}">Profil mis à jour avec succès.</div>
+        <div class="alert alert-danger" th:if="${erreur}" th:text="${erreur}">Erreur</div>
+        <div class="alert alert-info" th:if="${compteGoogle}">Ce compte est connecté via Google.</div>
+
+        <form class="sb-panel" method="post" th:action="@{/parametres/profil}" th:object="${profilDto}">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Prénom</label>
+                    <input type="text" th:field="*{prenom}" class="form-control" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('prenom')}" th:errors="*{prenom}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Nom</label>
+                    <input type="text" th:field="*{nom}" class="form-control" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Email</label>
+                    <input type="email" th:field="*{email}" class="form-control" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Téléphone</label>
+                    <input type="text" th:field="*{telephone}" class="form-control">
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Enregistrer</button>
+                <a th:href="@{/parametres/mot-de-passe}" class="btn btn-outline-secondary" th:unless="${compteGoogle}">
+                    <i class="bi bi-key me-1"></i>Changer le mot de passe
+                </a>
+            </div>
+        </form>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

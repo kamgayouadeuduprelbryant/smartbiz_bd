@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Produit — SmartBiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="sb-body">
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="sb-main">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="sb-content">
+        <div class="sb-page-title">
+            <h1 th:text="${produitDto.id != null} ? 'Modifier le produit' : 'Nouveau produit'">Nouveau produit</h1>
+        </div>
+
+        <form class="sb-panel" method="post" th:object="${produitDto}"
+              th:action="${produitDto.id != null} ? @{/produits/{id}(id=${produitDto.id})} : @{/produits}">
+
+            <input type="hidden" th:field="*{id}">
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Reference</label>
+                    <input type="text" th:field="*{reference}" class="form-control" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('reference')}" th:errors="*{reference}"></div>
+                </div>
+                <div class="col-md-8">
+                    <label class="form-label">Nom</label>
+                    <input type="text" th:field="*{nom}" class="form-control" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Description</label>
+                    <textarea th:field="*{description}" class="form-control" rows="2"></textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Categorie</label>
+                    <select th:field="*{categorieId}" class="form-select">
+                        <option value="">Aucune</option>
+                        <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.nom}"></option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Fournisseur</label>
+                    <select th:field="*{fournisseurId}" class="form-select">
+                        <option value="">Aucun</option>
+                        <option th:each="f : ${fournisseurs}" th:value="${f.id}" th:text="${f.nom}"></option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Prix d'achat</label>
+                    <input type="number" step="0.01" th:field="*{prixAchat}" class="form-control" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('prixAchat')}" th:errors="*{prixAchat}"></div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Prix de vente</label>
+                    <input type="number" step="0.01" th:field="*{prixVente}" class="form-control" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('prixVente')}" th:errors="*{prixVente}"></div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">
+                        Stock initial
+                        <i class="bi bi-info-circle text-muted" title="Non modifiable ensuite depuis ce formulaire : passez par Stock > Nouveau mouvement"></i>
+                    </label>
+                    <input type="number" th:field="*{quantiteStock}" class="form-control" th:readonly="${produitDto.id != null}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Seuil minimum</label>
+                    <input type="number" th:field="*{seuilMinimum}" class="form-control">
+                </div>
+
+                <div class="col-12" th:if="${produitDto.id != null}">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" th:field="*{actif}">
+                        <label class="form-check-label">Produit actif</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Enregistrer</button>
+                <a th:href="@{/produits}" class="btn btn-outline-secondary">Annuler</a>
+            </div>
+        </form>
+    </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
